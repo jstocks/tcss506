@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+  <h1> FDA Device Recall - OpenAPI Query Tool <p>Date/Time: <span id="datetime"></span></p>
+<script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleString();
+</script>
+ </h1>
+ {% endblock %}
