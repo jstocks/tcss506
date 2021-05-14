@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-  <h1> Using the FDA OpenAPI to save the world! </h1>
+  <h1> Using the FDA OpenAPI to save the world!
+
+    <br><br>Hello World from Jeff Stockman & Sriba Rajendran  <br><br><p>Date/Time: <span id="datetime"></span></p>
+  <script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleString();
+</script>
+</h1>
 {% endblock %}

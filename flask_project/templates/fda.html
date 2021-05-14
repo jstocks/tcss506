@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block title %}FDA OpenAPI Query{% endblock %}
 {% block content %}
-  <h1> Hello World from Jeff Stockman (stockmaj) <p>Date/Time: <span id="datetime"></span></p>
+        {%  with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  <h1>
 <script>
 var dt = new Date();
 document.getElementById("datetime").innerHTML = dt.toLocaleString();
@@ -14,14 +21,16 @@ document.getElementById("datetime").innerHTML = dt.toLocaleString();
       <th>#</th>
       <th>Recall Date</th>
       <th>Company</th>
+      <th>Reason for Recall</th>
     </tr>
   </thead>
   <tbody>
       {% for i in mydata %}
           <tr>
                 <th>{{loop.index0}}</th>
-                <td>{{i['report_date']}}</td>
+                <td>{{i['event_date_created']}}</td>
                 <td>{{i['recalling_firm']}}</td>
+                <td>{{i['reason_for_recall']}}</td>
           </tr>
       {% endfor %} 
   </tbody>
