@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}FDA OpenAPI Query{% endblock %}
+{% block content %}
+  <h1> Hello World from Jeff Stockman (stockmaj) <p>Date/Time: <span id="datetime"></span></p>
+<script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleString();
+</script>
+ </h1>
+
+<table class="table" table-striped w-50>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Recall Date</th>
+      <th>Company</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for i in mydata %}
+          <tr>
+                <th>{{loop.index0}}</th>
+                <td>{{i['report_date']}}</td>
+                <td>{{i['recalling_firm']}}</td>
+          </tr>
+      {% endfor %} 
+  </tbody>
+</table>
+
+{% endblock %}
