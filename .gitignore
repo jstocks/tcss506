@@ -8,6 +8,8 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.idea/
+flask_project/.idea
 build/
 postgres_data/
 develop-eggs/

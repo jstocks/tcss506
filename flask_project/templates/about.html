@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-  <h1> Using the FDA OpenAPI to save the world! </h1>
+  {%  with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <br><h1> FDA OpenAPI - Recall Database Query Tool
+
+    <br><br>Jeff Stockman & Sriba Rajendran  <br>TCSS506 Project<br><br>
+</h1>
 {% endblock %}

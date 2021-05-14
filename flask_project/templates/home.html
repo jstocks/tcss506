@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-  <h1> FDA Device Recall - OpenAPI Query Tool <p>Date/Time: <span id="datetime"></span></p>
+    {%  with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  <h1> FDA Device Recall - OpenAPI Query Tool <br><br><p><span id="datetime"></span></p>
 <script>
 var dt = new Date();
 document.getElementById("datetime").innerHTML = dt.toLocaleString();
