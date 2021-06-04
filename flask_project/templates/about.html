@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
   {%  with messages = get_flashed_messages() %}
@@ -9,8 +9,24 @@
         {% endif %}
     {% endwith %}
 
-    <br><h1> FDA OpenAPI - Recall Database Query Tool
+    <br><h2>&emsp;FDA OpenAPI - Query Tool</h2><br>
 
-    <br><br>Jeff Stockman & Sriba Rajendran  <br>TCSS506 Project<br><br>
-</h1>
+    <p>&emsp;&emsp;This site was created by Jeff Stockman & Sriba Rajendran as a Capstone Project
+        for the Graduate Certificate Program <br>&emsp;&emsp;in Software Development Engineering
+        at the Unversity of Washington - Tacoma.<p>
+
+    <p style="margin-left:30px">Requirements:<br>
+        1) Hosted on AWS EC2 Instance<br>
+        2) Flask Server<br>
+        3) NGINX reverse proxy to Gunicorn WSGI<br>
+        4) User Registration & Login via PostgreSQL Database<br>
+        5) Docker Container Deployment<br><br>
+
+    Features:<br>
+        1) Uses FDA OpenAPI JSON dataset found <a href="https://open.fda.gov/" target="_blank">here</a><br>
+        2) Customized Filters and search capability<br>
+        3) Email subscription to weekly updates<br><br>
+
+    <p>&emsp;&emsp;The source code can be found on <a href="https://github.com/jstocks/tcss506">GitHub</a>.</p>
+
 {% endblock %}

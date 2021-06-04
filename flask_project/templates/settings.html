@@ -1,0 +1,31 @@
+{% extends "base2.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="container w-50">
+<form action="" method="post">
+  {{ form.csrf_token }}
+  <div class="mb-3">
+      <fieldset class="form-field">
+     {{form.subscribe.label(class="form-control-label")}}
+     {{form.subscribe(class="form-control form-control-lg")}}
+     {% if form.subscribe.errors %}
+		<ul class="errors">
+			{% for error in form.subscribe.errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+		</ul>
+     {% endif %}
+    </fieldset>
+
+  </div>
+  {{form.submit}}
+</form>
+
+<br>
+    Change your account password?<a href="/resetpassword">Reset Password</a>
+<br>
+    No longer need our services?<a href="/deleteaccount">Delete Account</a>
+
+</div>
+
+{% endblock %}

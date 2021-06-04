@@ -12,13 +12,22 @@ class UserModel(UserMixin, db.Model):
     username = db.Column(db.String(25), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    subscription = db.Column(db.Boolean(), default=False)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
         
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-        
+
+
+class WinnerModel(db.Model):
+    __tablename__ = 'winner'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, unique=True, nullable=False)
+
+
 @login.user_loader  #loads session cookie, checks cookie id
 def load_user(id):
     return UserModel.query.get(int(id))

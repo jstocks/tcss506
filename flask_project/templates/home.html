@@ -8,10 +8,15 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-  <h1> FDA Device Recall - OpenAPI Query Tool <br><br><p><span id="datetime"></span></p>
+  <br>
+    <h2 style="margin-left:20px">FDA OpenAPI - Query Tool <p></h2>
+      <p font="normal" style="margin-left:20px">This site uses the FDA OpenAPI database to search and subscribe to Medical Device Adverse Event reports.</p>
+      <p style="margin-left:20px">The FDA OpenAPI source & documentation can be found <a href="https://open.fda.gov/" target="_blank">here</a>.<p>
+
+<span style="margin-left:20px" id="datetime"></span></p>
 <script>
 var dt = new Date();
 document.getElementById("datetime").innerHTML = dt.toLocaleString();
 </script>
- </h1>
+
  {% endblock %}

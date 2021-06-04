@@ -6,3 +6,10 @@ flask-login
 flask-sqlalchemy
 gunicorn
 psycopg2-binary
+pandas~=1.2.4
+plotly~=4.14.3
+plotly.express
+WTForms~=2.3.3
+Werkzeug~=2.0.0
+flask-mail
+boto3

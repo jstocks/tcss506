@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="container w-50">
+<form action="" method="post">
+  {{ form.csrf_token }}
+  <div class="mb-3">
+
+  <fieldset class="form-field">
+     {{form.delete_account.label(class="form-control-label")}}
+     {{form.delete_account(class="form-control form-control-lg")}}
+     {% if form.delete_account.errors %}
+		<ul class="errors">
+			{% for error in form.delete_account.errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+		</ul>
+     {% endif %}
+    </fieldset>
+
+  </div>
+  {{form.submit}}
+</form>
+</div>
+
+{% endblock %}

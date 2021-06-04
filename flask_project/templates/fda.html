@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% extends "base.html" %}
 {% block title %}FDA OpenAPI Query{% endblock %}
 {% block content %}
@@ -19,23 +20,27 @@ document.getElementById("datetime").innerHTML = dt.toLocaleString();
   <thead>
     <tr>
       <th style="width: 5%">#</th>
-      <th style="width: 10%">Recall Date</th>
+      <th style="width: 10%">Event Date</th>
       <th style="width: 15%">Company</th>
-      <th style="width: 35%">Product Description</th>
-      <th style="width: 35%">Reason for Recall</th>
+      <th style="width: 35%">Product Name</th>
+      <th style="width: 35%">Reason for Event</th>
     </tr>
   </thead>
   <tbody>
       {% for i in mydata %}
           <tr>
                 <th>{{loop.index0}}</th>
-                <td>{{i['event_date_created']}}</td>
-                <td>{{i['recalling_firm']}}</td>
-                <td>{{i['product_description']}}</td>
-                <td>{{i['reason_for_recall']}}</td>
+                <td>{{i['date_of_event']}}</td>
+                <td>{{i['manufacturer_d_name']}}</td>
+                <td>{{i['brand_name']}}</td>
+                <td>{{i['product_problems']}}</td>
           </tr>
       {% endfor %} 
   </tbody>
 </table>
+
+ <br>
+    View the data as a graph?<a href="/fdagraph">Graph</a>
+    View map<a href="/fdamap">Map</a>
 
 {% endblock %}
