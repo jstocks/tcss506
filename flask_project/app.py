@@ -32,6 +32,12 @@ DBNAME = 'pglogindb'
 # DBPORT = '5432'
 # DBNAME = 'postgres'
 
+
+# DBUSER = 'postgres'
+# DBPASS = 'password'
+# DBHOST = '172.17.0.2'
+# DBPORT = '5432'
+# DBNAME = 'postgres'
 EMAIL_ADDRESS = os.environ.get('EMAIL_ID_FDA')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASS_FDA')
 
@@ -136,13 +142,15 @@ def send_bulk_weekly(start, end):
                 msg = Message(recipients=[user],
                               sender=EMAIL_ADDRESS,
                               subject=subject)
-                if generate_last_week_update():
+                if generate_last_week_update() is True:
                     msg.body = "FDA database updated with new records!"
                     with app.open_resource("data_file.csv") as fp:
                         msg.attach("fda_recall_update.csv", "text/csv", fp.read())
                 else:
                     msg.body = "No new records were added last week!"
                 conn.send(msg)
+                print("email sent")
+
 
 @app.before_first_request  # decorator to make the actual database
 def create_table():
@@ -333,13 +341,14 @@ def thread1():
     for _ in range(10):
         time.sleep(1)
         print("daemon_thread1 in the bg!!")
-        if date.today().weekday() == 3:
+        if date.today().weekday() == 4:
             with app.app_context():
                 try:
                     data1 = WinnerModel(date=date.today())
                     db.session.add(data1)
                     db.session.commit()
                     send_sqs_message()
+                    print("msg sent")
                 except Exception as e:
                     pass
 
@@ -355,6 +364,7 @@ def thread2():
                 # send_weekly(response[0].body[0].lower(), response[0].body[-1].lower())
                 send_bulk_weekly(response[0].body[0].lower(), response[0].body[-1].lower())
                 response[0].delete()
+                print("printing from t2 after msg delete")
         except Exception as e:
             print(e)
 
