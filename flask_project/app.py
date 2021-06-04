@@ -154,10 +154,6 @@ def send_bulk_weekly(start, end):
 
 @app.before_first_request  # decorator to make the actual database
 def create_table():
-    t1 = threading.Thread(target=thread1, daemon=True)
-    t2 = threading.Thread(target=thread2, daemon=True)
-    t1.start()
-    t2.start()
     # db creation
     db.create_all()
     try:
@@ -168,6 +164,12 @@ def create_table():
         user1.set_password('password')
         db.session.add(user1)
         db.session.commit()
+
+        time.sleep(15)
+        t1 = threading.Thread(target=thread1, daemon=True)
+        t2 = threading.Thread(target=thread2, daemon=True)
+        t1.start()
+        t2.start()
     except Exception as e:
         return
 
@@ -340,6 +342,10 @@ def deleteaccount():
 def thread1():
     for _ in range(10):
         time.sleep(1)
+        # for debugging purpose
+        f = open("thread1.txt", "w")
+        f.write("daemon_thread1 in the bg!!")
+        f.close()
         print("daemon_thread1 in the bg!!")
         if date.today().weekday() == 4:
             with app.app_context():
