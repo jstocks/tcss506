@@ -11,7 +11,7 @@ __pycache__/
 .idea/
 flask_project/.idea
 build/
-# postgres_data/
+postgres_data/
 develop-eggs/
 dist/
 downloads/
