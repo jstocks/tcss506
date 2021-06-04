@@ -14,6 +14,8 @@ from wtforms import StringField, PasswordField, SubmitField, RadioField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 from api import find_recall, graph_recall, map_recall, generate_last_week_update
 from device import device_api
+from drug import drug_api
+from food import food_api
 from flask_login import current_user, login_user, login_required, logout_user
 from models import db, login, UserModel, WinnerModel
 from sqs_message import send_sqs_message, receive_sqs_message
@@ -207,6 +209,28 @@ def about():
 @login_required
 def devices():
     return render_template('devices.html', mydata=device_api(
+        request.args.get("limit"),
+        request.args.get("company"),
+        request.args.get("from_date"),
+        request.args.get("to_date")
+    ))
+
+
+@app.route('/drug')
+@login_required
+def drug():
+    return render_template('drug.html', mydata=drug_api(
+        request.args.get("limit"),
+        request.args.get("company"),
+        request.args.get("from_date"),
+        request.args.get("to_date")
+    ))
+
+
+@app.route('/food')
+@login_required
+def food():
+    return render_template('food.html', mydata=food_api(
         request.args.get("limit"),
         request.args.get("company"),
         request.args.get("from_date"),
