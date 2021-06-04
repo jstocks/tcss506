@@ -19,24 +19,21 @@ from models import db, login, UserModel, WinnerModel
 from sqs_message import send_sqs_message, receive_sqs_message
 
 # cloud database info
-# DBUSER = 'stockmaj'
-# DBPASS = 'password'
-# DBHOST = 'db'
-# DBPORT = '5432'
-# DBNAME = 'pglogindb'
+# DBUSER = 'xxxxxxxx'
+# DBPASS = 'xxxxxxxx'
+# DBHOST = 'xxxxxxxx'
+# DBPORT = 'xxxxxxxx'
+# DBNAME = 'xxxxxxxx'
 
 # local database info
-DBUSER = 'postgres'
-DBPASS = 'password'
-DBHOST = 'localhost'
-DBPORT = '5432'
-DBNAME = 'postgres'
+# DBUSER = 'postgres'
+# DBPASS = 'password'
+# DBHOST = 'localhost'
+# DBPORT = '5432'
+# DBNAME = 'postgres'
 
 # EMAIL_ADDRESS = os.environ.get('EMAIL_ID_FDA')
 # EMAIL_PASSWORD = os.environ.get('EMAIL_PASS_FDA')
-
-EMAIL_ADDRESS = "fdarecalltest@gmail.com"
-EMAIL_PASSWORD = "peqmkprbtonjommw"
 
 
 class loginForm(FlaskForm):
