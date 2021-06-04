@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% extends "base2.html" %}
+{% block title %}FDA OpenAPI Drug Recall Query{% endblock %}
+{% block content %}
+        {%  with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<html lang="en">
+    <head>
+      <b>&emsp;Search Fields</b><p>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>jQuery UI Datepicker - Icon trigger</title>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+        $( function() {
+          $( "#from_date" ).datepicker({
+            showOn: "button",
+            buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+            buttonImageOnly: true,
+            buttonText: "From Date"
+          });
+        } );
+        $( function() {
+          $( "#to_date" ).datepicker({
+            showOn: "button",
+            buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+            buttonImageOnly: true,
+            buttonText: "To Date"
+          });
+        } );
+        $( function() {
+          var availableTags = [
+          "Abbott",
+          "Baxter",
+          "Carefusion",
+          "Roche"
+    ];
+    $( "#company" ).autocomplete({
+      source: availableTags
+    });
+    $( "#company" ).keyup(function(){
+            //alert($("#company").val())
+        }
+    );
+  } );
+        </script>
+
+    </head>
+<body>
+
+<form id="target" method="get" action="/drug">
+    <p style="margin-left: 35px";>From: <input type="text" id="from_date" name="from_date"/></p>
+    <p style="margin-left: 55px";>To: <input type="text" id="to_date" name="to_date"/></p>
+    <p style="margin-left: 5px";>Company: <input type="text" id="company" name="company"/></p>
+    <input style="margin-left: 219px;" type="submit" value="Filter">
+</form>
+<br>
+
+
+  <b>&emsp;Results</b> (limited to first 100 entries)
+</body>
+<table class="table" table-striped w-50>
+  <thead>
+    <tr>
+      <th style="width: 5%">#</th>
+      <th style="width: 10%">Recall Date</th>
+      <th style="width: 15%">Company</th>
+      <th style="width: 35%">Product Description</th>
+      <th style="width: 35%">Product Problem</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for i in mydata %}
+          <tr>
+                <th>{{loop.index0}}</th>
+                <td>{{i['report_date']}}</td>
+                <td>{{i['recalling_firm']}}</td>
+                <td>{{i['product_description']}}</td>
+                <td>{{i['reason_for_recall']}}</td>
+          </tr>
+      {% endfor %} 
+  </tbody>
+</table>
+
+{% endblock %}
