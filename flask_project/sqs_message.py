@@ -6,6 +6,10 @@ AWS_ID = os.environ.get('AWS_KEY_ID')
 
 
 def send_sqs_message():
+    """
+    Sends message to the AWS SQS queue.
+    :return: None
+    """
     try:
         client = boto3.resource('sqs', region_name='us-east-2',
                                 aws_access_key_id=AWS_ID,
@@ -18,11 +22,14 @@ def send_sqs_message():
 
 
 def receive_sqs_message():
+    """
+    Receives message from the AWS SQS queue.
+    :return: List
+    """
     try:
         client = boto3.resource('sqs', region_name='us-east-2',
                                 aws_access_key_id=AWS_ID,
                                 aws_secret_access_key=AWS_KEY)
-        QueueUrl = "https://us-east-2.queue.amazonaws.com/328370162946/EmailQueue"
         queue = client.get_queue_by_name(QueueName='EmailQueue')
         response = queue.receive_messages(MaxNumberOfMessages=1, VisibilityTimeout=120, WaitTimeSeconds=13)
         # response[0].delete()
