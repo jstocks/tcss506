@@ -7,7 +7,6 @@ from datetime import date
 
 from flask import Flask, render_template, request, redirect, flash
 from flask_googlemaps import GoogleMaps
-from flask_login import current_user, login_user, login_required, logout_user
 from flask_mail import Mail, Message
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField
@@ -21,19 +20,18 @@ from models import db, login, UserModel, WinnerModel
 from sqs_message import send_sqs_message, receive_sqs_message
 
 # cloud database info
-DBUSER = 'xxxxxx'
-DBPASS = 'xxxxxx'
-DBHOST = 'xxxxxx'
-DBPORT = 'xxxxxx'
-DBNAME = 'xxxxxx'
+# DBUSER = 'xxxxxx'
+# DBPASS = 'xxxxxx'
+# DBHOST = 'xxxxxx'
+# DBPORT = 'xxxxxx'
+# DBNAME = 'xxxxxx'
 
 # local database info
-# DBUSER = 'postgres'
-# DBPASS = 'password'
-# DBHOST = 'localhost'
-# DBPORT = '5432'
-# DBNAME = 'postgres'
-
+DBUSER = 'postgres'
+DBPASS = 'password'
+DBHOST = '172.17.0.2'
+DBPORT = '5432'
+DBNAME = 'postgres'
 
 EMAIL_ADDRESS = os.environ.get('EMAIL_ID_FDA')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASS_FDA')
@@ -47,10 +45,13 @@ class loginForm(FlaskForm):
 
 class registrationForm(FlaskForm):
     username = StringField(label='Username', validators=[DataRequired(), Length(min=6, max=25)])
-    email = StringField(label='Email',validators=[DataRequired(), Email()])
-    password = PasswordField(label='New Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match'), Length(min=6,max=16)])
-    confirm = PasswordField(label='Repeat Password', validators=[DataRequired(), Length(min=6,max=16)])
+    email = StringField(label='Email', validators=[DataRequired(), Email()])
+    password = PasswordField(label='New Password',
+                             validators=[DataRequired(), EqualTo('confirm', message='Passwords must match'),
+                                         Length(min=6, max=16)])
+    confirm = PasswordField(label='Repeat Password', validators=[DataRequired(), Length(min=6, max=16)])
     submit = SubmitField(label='Register')
+
 
 class subscriptionForm(FlaskForm):
     subscribe = RadioField(label='Subscribe for weekly updates to the FDA device recall database',
@@ -67,6 +68,7 @@ class passwordresetForm(FlaskForm):
     password1 = PasswordField(label='Reset Password', validators=[DataRequired(), Length(min=6, max=16)])
     password2 = PasswordField(label='Retype new Password', validators=[DataRequired(), Length(min=6, max=16)])
     submit = SubmitField(label='Done')
+
 
 def updateSubscription(username, subscription=False):
     user = UserModel.query.filter_by(username=username).first()
@@ -95,7 +97,7 @@ def delete_record(username):
 app = Flask(__name__)
 app.secret_key = 'a secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-     'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}'.format(
+    'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}'.format(
         user=DBUSER,
         passwd=DBPASS,
         host=DBHOST,
@@ -112,7 +114,6 @@ app.config['MAIL_PASSWORD'] = EMAIL_PASSWORD
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
-
 
 db.init_app(app)
 login.init_app(app)
@@ -146,7 +147,6 @@ def send_bulk_weekly(start, end):
                 else:
                     msg.body = "No new records were added last week!"
                 conn.send(msg)
-                print("email sent")
 
 
 @app.before_first_request  # decorator to make the actual database
@@ -161,14 +161,14 @@ def create_table():
         user1.set_password('password')
         db.session.add(user1)
         db.session.commit()
-
-        time.sleep(15)
-        t1 = threading.Thread(target=thread1, daemon=True)
-        t2 = threading.Thread(target=thread2, daemon=True)
-        t1.start()
-        t2.start()
     except Exception as e:
         return
+    # Producer thread - to send message to SQS
+    # Consumer thread - to receive message from SQS
+    t1 = threading.Thread(target=producer_thread, daemon=True)
+    t2 = threading.Thread(target=consumer_thread, daemon=True)
+    t1.start()
+    t2.start()
 
 
 @app.route('/')
@@ -238,7 +238,7 @@ def food():
     ))
 
 
-@app.route('/login',methods=["POST", "GET"])
+@app.route('/login', methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
         return redirect('/devices')
@@ -357,39 +357,38 @@ def deleteaccount():
         return render_template('settings_delete.html', form=form)
 
 
-#
-def thread1():
-    for _ in range(10):
-        time.sleep(1)
+# Producer thread
+def producer_thread():
+    while True:
+        time.sleep(6)
         # for debugging purpose
-        f = open("thread1.txt", "w")
-        f.write("daemon_thread1 in the bg!!")
-        f.close()
-        print("daemon_thread1 in the bg!!")
-        if date.today().weekday() == 4:
+        # f = open("thread1.txt", "w")
+        # f.write("daemon_thread1 in the bg!!")
+        # f.close()
+        # print("daemon_thread1 in the bg!!")
+        if date.today().weekday() == 6:
             with app.app_context():
                 try:
                     data1 = WinnerModel(date=date.today())
                     db.session.add(data1)
                     db.session.commit()
                     send_sqs_message()
-                    print("msg sent")
                 except Exception as e:
                     pass
 
 
-def thread2():
-    for _ in range(10):
-        time.sleep(6)
-        print("daemon_thread2 in the bg!!")
+# Consumer thread
+def consumer_thread():
+    while True:
+        time.sleep(10)
+        # print("daemon_thread2 in the bg!!")
         try:
             response = receive_sqs_message()
             if len(response) > 0:
-                print(f"response from thread2-sqs message received: {response[0].body}")
-                # send_weekly(response[0].body[0].lower(), response[0].body[-1].lower())
+                print(f"response from consumer-sqs message received: {response[0].body}")
                 send_bulk_weekly(response[0].body[0].lower(), response[0].body[-1].lower())
                 response[0].delete()
-                print("printing from t2 after msg delete")
+                print("printing from consumer after msg delete")
         except Exception as e:
             print(e)
 
