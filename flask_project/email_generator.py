@@ -1,11 +1,18 @@
 from datetime import date, timedelta
 import requests
 import csv
+from flask_mail import Message
 
 
 def generate_last_week_update():
+    """
+    Checks the FDA device recall API for any new updates in the last week.
+    In case of updates creates a csv file with the updates and returns True
+    else returns False.
+    :return: Boolean
+    """
     end_date = date.today().strftime("%Y%m%d")
-    start_date = (date.today() - timedelta(days=15)).strftime("%Y%m%d")
+    start_date = (date.today() - timedelta(days=7)).strftime("%Y%m%d")
     api_key = 'lKIZT2mPzq9RE0VqsDPyJpB5IbxbDzch8ne71Kbb'
     headers = {'Authorization': 'Bearer {}'.format(api_key)}
     search_api_url = f'https://api.fda.gov/device/recall.json?search=event_date_created:[{start_date}+TO+{end_date}]'
@@ -35,6 +42,30 @@ def generate_last_week_update():
         return True
     else:
         return False
+
+
+def send_bulk_weekly(app, mail, sender_email, email_list):
+    """
+    Sends the weekly updates to the subscribers.
+    :param app: Object
+    :param mail: Object
+    :param sender_email: String
+    :param email_list: List of subscribers
+    :return: None
+    """
+    with mail.connect() as conn:
+        for user in email_list:
+            subject = "Your weekly update from the FDA recall API!"
+            msg = Message(recipients=[user],
+                          sender=sender_email,
+                          subject=subject)
+            if generate_last_week_update() is True:
+                msg.body = "FDA database updated with new records!"
+                with app.open_resource("data_file.csv") as fp:
+                    msg.attach("fda_recall_update.csv", "text/csv", fp.read())
+            else:
+                msg.body = "No new records were added last week!"
+            conn.send(msg)
 
 
 if __name__ == "__main__":
